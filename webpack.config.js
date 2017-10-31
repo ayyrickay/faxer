@@ -30,7 +30,7 @@ module.exports = {
   resolve: {
     modules: ['node_modules', 'components'],
     alias: {
-      config: path.join(__dirname, 'src/config', 'index.js'),
+      config: path.resolve(__dirname, 'src/config'),
     }
   },
   devtool: 'source-map',

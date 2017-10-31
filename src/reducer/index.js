@@ -1,5 +1,6 @@
-const initialState = {}
+import {combineReducers} from 'redux'
+import faxForm from './FaxForm'
 
-export default (state = initialState, action) => {
-    return state
-}
+export default combineReducers({
+  faxForm
+})

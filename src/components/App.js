@@ -1,9 +1,11 @@
 import React from 'react'
+import FaxForm from './FaxForm/FaxForm.js'
 
 const App = () =>
 
-    <div className='container'>
-        <h1 className='title'>Faxer</h1>
+    <div>
+        <h1>Fax it</h1>
+        <FaxForm />
     </div>
 
 export default App
