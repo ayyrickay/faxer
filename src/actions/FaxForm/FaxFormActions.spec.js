@@ -4,7 +4,8 @@ import * as types from '../../constants/ActionTypes'
 
 test('Send Fax Actions', (assert) => {
   const requestAction = {
-    type: types.SEND_FAX_REQUEST
+    type: types.SEND_FAX_REQUEST,
+    sending: true
   }
 
   const fax = {
@@ -28,11 +29,13 @@ test('Send Fax Actions', (assert) => {
 
   const successAction = {
     type: types.SEND_FAX_SUCCESS,
+    sending: false,
     fax
   }
 
   const failureAction = {
     type: types.SEND_FAX_FAILURE,
+    sending: false,
     fax
   }
 

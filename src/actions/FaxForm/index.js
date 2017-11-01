@@ -3,13 +3,15 @@ import {SEND_FAX_REQUEST, SEND_FAX_SUCCESS, SEND_FAX_FAILURE} from '../../consta
 
 export const sendFaxRequest = () => {
   return {
-    type: SEND_FAX_REQUEST
+    type: SEND_FAX_REQUEST,
+    sending: true
   }
 }
 
 export const sendFaxSuccess = (fax) => {
   return {
     type: SEND_FAX_SUCCESS,
+    sending: false,
     fax
   }
 }
@@ -17,21 +19,15 @@ export const sendFaxSuccess = (fax) => {
 export const sendFaxFailure = (fax) => {
   return {
     type: SEND_FAX_FAILURE,
+    sending: false,
     fax
   }
 }
 
 export const sendFax = (recipient, resource) => {
-  // const client = require('twilio')(config.twilioSid, config.twilioAuth)
-  // const faxDetails = {
-  //   to: recipient,
-  //   from: config.TwilioNumber,
-  //   [config.twilio]
-  //   mediaUrl: resource
-  // }
-  console.log('Sending Fax')
+  let responseState = null
   return dispatch => {
-    dispatch(sendFaxRequest)
+    dispatch(sendFaxRequest())
     fetch('https://fax.twilio.com/v1/Faxes', {
       body: `To=${encodeURIComponent('+' + recipient)}&From=${encodeURIComponent(config.twilioNumber)}&MediaUrl=${resource}`,
       headers: {
@@ -41,25 +37,18 @@ export const sendFax = (recipient, resource) => {
       method: 'POST'
     })
       .then((response) => {
-        if (response.ok) {
-          return response.json()
-        } else {
-          dispatch(sendFaxFailure(response.json()))
-        }
+        responseState = response.ok
+        return response.json()
       })
-      .then(json => {
-        dispatch(sendFaxSuccess(json))
+      .then((json) => {
+        if (responseState) {
+          dispatch(sendFaxSuccess(json))
+        } else {
+          dispatch(sendFaxFailure(json))
+        }
       })
       .catch((err) => {
         dispatch(sendFaxFailure(err))
       })
-    // return client.fax.v1.faxes.create(faxDetails)
-    //   .then((response) => response.json())
-    //   .then(json => {
-    //     dispatch(sendFaxSuccess(json))
-    //   })
-    //   .catch((err) => {
-    //     dispatch(sendFaxFailure(err))
-    //   })
   }
 }

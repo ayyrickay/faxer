@@ -6,7 +6,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 Enzyme.configure({adapter: new Adapter()})
 
-const wrapper = shallow(<FaxForm />)
+const wrapper = shallow(<FaxForm faxForm={{}} sendFax={() => {}} />)
 
 test('<FaxForm /> renders', (assert) => {
   assert.ok(wrapper, 'shallow renders successfully')
@@ -27,7 +27,7 @@ test('<FaxForm /> contains two inputs', (assert) => {
 })
 
 test('<FaxForm /> contains a submit span', (assert) => {
-  assert.equal(wrapper.find('span').length, 1, 'it contains two inputs')
+  assert.equal(wrapper.find('span').length, 1, 'it contains one span')
 
   assert.end()
 })

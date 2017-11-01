@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import {sendFax} from '../../actions/FaxForm'
 import PropTypes from 'prop-types'
+import styles from './FaxForm.css'
 
 export class FaxForm extends Component {
 
@@ -21,21 +22,17 @@ export class FaxForm extends Component {
 
   typeHandler (event) {
     if (event.which === 13) {
-      this.submitForm()
+      this.submitForm(this.validateForm())
     }
   }
 
   submitForm () {
-    console.log('submitting form')
-    this.validateForm()
-    console.log(this.state.resource.isValid, this.state.recipient.isValid)
     if (this.state.resource.isValid && this.state.recipient.isValid) {
-      this.props.sendFax(this.recipient.value, this.resource.value)
+      this.props.sendFax(this.recipient.value.replace(/\D/g, ''), this.resource.value)
     }
   }
 
   validateForm () {
-    console.log('before', this.state)
     this.setState({
       resource: {
         isValid: this.resource.checkValidity()
@@ -44,27 +41,34 @@ export class FaxForm extends Component {
         isValid: this.recipient.checkValidity()
       }
     })
-    console.log('after', this.state)
   }
 
   render () {
     return (
-      <div>
+      <div className={styles.mainForm}>
+        {this.props.faxForm.to && (
+          <p className={styles.successText}>{`Sent fax to ${this.props.faxForm.to}`}</p>
+        )}
+        {this.props.faxForm.message && (
+          <p className={styles.failText}>{this.props.faxForm.message}</p>
+        )}
         <input
           type='tel'
           ref={(recipient) => {this.recipient = recipient}}
-          placeholder='4151234567'
+          placeholder='e.g., (415) 660-8810'
           onKeyUp={this.typeHandler.bind(this)}
           required
         />
         <input
           type='url'
           ref={(resource) => {this.resource = resource}}
-          placeholder='a valid pdf url (e.g., hello.com/doc.pdf)'
+          placeholder='a valid pdf url (e.g., "hello.com/doc.pdf")'
           onKeyUp={this.typeHandler.bind(this)}
           required
         />
-        <span onClick={this.submitForm.bind(this)}> Send Fax </span>
+        <span className={styles.button} onClick={this.submitForm.bind(this)}>
+          {this.props.faxForm.sending ? 'Sending...' : 'Send Fax'}
+        </span>
       </div>
     )
   }

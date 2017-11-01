@@ -3,43 +3,11 @@ import reducer from './index.js'
 import * as types from '../../constants/ActionTypes'
 
 const initialState = {
-  'sending': false,
-  'status': null,
-  'direction': null,
-  'from': null,
-  'date_updated': null,
-  'price': null,
-  'account_sid': null,
-  'to': null,
-  'date_created': null,
-  'url': null,
-  'sid': null,
-  'duration': null,
-  'num_pages': null,
-  'quality': null,
-  'price_unit': null,
-  'api_version': null,
-  'media_url': null
+  'sending': false
 }
 
 const sendingState = {
-  'sending': true,
-  'status': null,
-  'direction': null,
-  'from': null,
-  'date_updated': null,
-  'price': null,
-  'account_sid': null,
-  'to': null,
-  'date_created': null,
-  'url': null,
-  'sid': null,
-  'duration': null,
-  'num_pages': null,
-  'quality': null,
-  'price_unit': null,
-  'api_version': null,
-  'media_url': null
+  'sending': true
 }
 
 const sentFax = {
@@ -62,10 +30,19 @@ const sentFax = {
   'media_url': null
 }
 
+const faxFailure = {
+  sending: false,
+  code: 21203,
+  message: 'Dialing to this country is not permitted by your account\'s international permissions',
+  more_info: 'https://www.twilio.com/docs/errors/21203',
+  status: 403
+}
+
 test('Fax Form reducer', (assert) => {
   assert.deepEqual(reducer(undefined, {}), initialState, 'undefined cases returns the initial state')
-  assert.deepEqual(reducer(undefined, {type: types.SEND_FAX_REQUEST}), sendingState, 'request state triggers sending flag')
+  assert.deepEqual(reducer(undefined, {type: types.SEND_FAX_REQUEST, sending: true}), sendingState, 'request state triggers sending flag')
   assert.deepEqual(reducer(initialState, {type: types.SEND_FAX_SUCCESS, fax: sentFax}), sentFax, 'sending a fax updates initial state')
+  assert.deepEqual(reducer(initialState, {type: types.SEND_FAX_FAILURE, sending: false, fax: faxFailure}), faxFailure, 'sending a fax updates initial state')
 
   assert.end()
 })

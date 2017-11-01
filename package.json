@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base ./src --open",
     "lint": "./node_modules/.bin/eslint ./",
-    "test": "NODE_PATH=./src node_modules/.bin/tape -r babel-register src/**/**/*.spec.js | node_modules/.bin/faucet"
+    "test": "NODE_PATH=./src node_modules/.bin/tape src/**/**/*.spec.js -r babel-register -r ignore-styles"
   },
   "author": "Ricky Holtz",
   "license": "ISC",
@@ -31,7 +31,9 @@
     "eslint-plugin-react": "^7.4.0",
     "faucet": "0.0.1",
     "file-loader": "^1.1.5",
+    "ignore-styles": "^5.0.1",
     "react-hot-loader": "^3.1.1",
+    "style-loader": "^0.19.0",
     "tape": "^4.8.0",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3"
