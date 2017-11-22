@@ -1,5 +1,6 @@
 import config from 'config'
-import {SEND_FAX_REQUEST, SEND_FAX_SUCCESS, SEND_FAX_FAILURE} from '../../constants/ActionTypes'
+import SyncClient from 'twilio-sync'
+import {SEND_FAX_REQUEST, SEND_FAX_SUCCESS, SEND_FAX_FAILURE, UPDATE_FAX_STATUS, WEB_SOCKET_CREATED_SUCCESS} from '../../constants/ActionTypes'
 
 export const sendFaxRequest = () => {
   return {
@@ -11,7 +12,6 @@ export const sendFaxRequest = () => {
 export const sendFaxSuccess = (fax) => {
   return {
     type: SEND_FAX_SUCCESS,
-    sending: false,
     fax
   }
 }
@@ -24,17 +24,20 @@ export const sendFaxFailure = (fax) => {
   }
 }
 
+export const updateFaxStatus = (status) => {
+  return {
+    type: UPDATE_FAX_STATUS,
+    sending: false,
+    status
+  }
+}
+
 export const sendFax = (recipient, resource) => {
   let responseState = null
   return dispatch => {
     dispatch(sendFaxRequest())
-    fetch('https://fax.twilio.com/v1/Faxes', {
-      body: `To=${encodeURIComponent('+' + recipient)}&From=${encodeURIComponent(config.twilioNumber)}&MediaUrl=${resource}`,
-      headers: {
-        'Authorization': `Basic ${window.btoa(`${config.twilioSid}:${config.twilioAuth}`)}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      method: 'POST'
+    fetch(`https://finicky-lettuce-4404.twil.io/send-fax?to=${encodeURIComponent('+' + recipient)}&from=${encodeURIComponent(config.twilioNumber)}&mediaUrl=${resource}`, {
+      method: 'POST',
     })
       .then((response) => {
         responseState = response.ok
@@ -49,6 +52,35 @@ export const sendFax = (recipient, resource) => {
       })
       .catch((err) => {
         dispatch(sendFaxFailure(err))
+      })
+  }
+}
+export const webSocketCreatedSuccess = () => {
+  return {
+    type: WEB_SOCKET_CREATED_SUCCESS,
+  }
+}
+
+export const syncFax = () => {
+  return dispatch => {
+    fetch('https://finicky-lettuce-4404.twil.io/sync-token')
+      .then((response) => {
+        return response.text()
+      }).then((data) => {
+        dispatch(webSocketCreatedSuccess())
+        const json = JSON.parse(data)
+        const twilioSync = new SyncClient(json.token)
+        twilioSync.document('fax_status').then((doc) => {
+          doc.set({
+            status: null
+          })
+
+          doc.on('updated', (data) => {
+            dispatch(updateFaxStatus(data))
+          })
+        })
+      }).catch((err) => {
+        console.error(err) // eslint-disable-line
       })
   }
 }
