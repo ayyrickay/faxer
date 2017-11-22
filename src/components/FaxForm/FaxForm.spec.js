@@ -6,7 +6,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 Enzyme.configure({adapter: new Adapter()})
 
-const wrapper = shallow(<FaxForm faxForm={{}} sendFax={() => {}} />)
+const wrapper = shallow(<FaxForm faxForm={{status: ''}} sendFax={() => {}} syncFax={() => {}} />)
 
 test('<FaxForm /> renders', (assert) => {
   assert.ok(wrapper, 'shallow renders successfully')

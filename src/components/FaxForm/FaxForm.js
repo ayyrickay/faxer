@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
-import {sendFax} from '../../actions/FaxForm'
+import {sendFax, syncFax} from '../../actions/FaxForm'
 import PropTypes from 'prop-types'
 import styles from './FaxForm.css'
+import {FaxStates} from './FaxStates'
 
 export class FaxForm extends Component {
 
@@ -18,6 +19,10 @@ export class FaxForm extends Component {
         isValid: null
       }
     }
+  }
+
+  componentDidMount () {
+    this.props.syncFax()
   }
 
   typeHandler (event) {
@@ -44,10 +49,20 @@ export class FaxForm extends Component {
   }
 
   render () {
+    const faxForm = this.props.faxForm
+
     return (
       <div className={styles.mainForm}>
-        {this.props.faxForm.to && (
-          <p className={styles.successText}>{`Sent fax to ${this.props.faxForm.to}`}</p>
+        {faxForm.status && (
+          <div className={styles[FaxStates[faxForm.status].style]}>
+            <p>{FaxStates[faxForm.status].displayText}</p>
+            {faxForm.ErrorMessage && (
+              <p> {`${faxForm.ErrorMessage} (Code: ${faxForm.ErrorCode})`}</p>
+            )}
+            {this.props.faxForm.sending && (
+              <p className={styles.progressText}>{`Sending fax to ${this.props.faxForm.to}`}</p>
+            )}
+          </div>
         )}
         {this.props.faxForm.message && (
           <p className={styles.failText}>{this.props.faxForm.message}</p>
@@ -76,7 +91,8 @@ export class FaxForm extends Component {
 
 FaxForm.propTypes = {
   sendFax: PropTypes.func.isRequired,
-  faxForm: PropTypes.object
+  faxForm: PropTypes.object,
+  syncFax: PropTypes.func
 }
 
 const mapStateToProps = ({faxForm}) => ({faxForm})
@@ -84,7 +100,8 @@ const mapStateToProps = ({faxForm}) => ({faxForm})
 const mapDispatchToProps = (dispatch) => ({
   sendFax: (recipient, resource) => {
     dispatch(sendFax(recipient, resource))
-  }
+  },
+  syncFax: () => dispatch(syncFax())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(FaxForm)

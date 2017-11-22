@@ -7,6 +7,10 @@
   color: #27ae60;
 }
 
+.progressText {
+  color: #34495e;
+}
+
 .failText {
   color: #c0392b;
 }

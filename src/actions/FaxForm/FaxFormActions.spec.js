@@ -29,7 +29,6 @@ test('Send Fax Actions', (assert) => {
 
   const successAction = {
     type: types.SEND_FAX_SUCCESS,
-    sending: false,
     fax
   }
 
