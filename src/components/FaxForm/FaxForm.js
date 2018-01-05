@@ -53,9 +53,9 @@ export class FaxForm extends Component {
 
     return (
       <div className={styles.mainForm}>
-        {faxForm.status && (
-          <div className={styles[FaxStates[faxForm.status].style]}>
-            <p>{FaxStates[faxForm.status].displayText}</p>
+        {faxForm.status && FaxStates[faxForm.status] && (
+          <div className={styles[FaxStates[faxForm.status]] ? styles[FaxStates[faxForm.status]].style : ''}>
+            <p>{`${FaxStates[faxForm.status].displayText} ${FaxStates[faxForm.status].displayText === 'Delivered' ? `${faxForm.OriginalMediaUrl} to ${faxForm.To}` : ''}`}</p>
             {faxForm.ErrorMessage && (
               <p> {`${faxForm.ErrorMessage} (Code: ${faxForm.ErrorCode})`}</p>
             )}

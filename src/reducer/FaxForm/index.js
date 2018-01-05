@@ -8,7 +8,7 @@ export default function fax(state = initialState, action) {
   const sending = action.sending
   switch (action.type) {
     case FaxActions.SEND_FAX_REQUEST:
-      return Object.assign({}, state, {sending})
+      return Object.assign({}, {sending})
     case FaxActions.SEND_FAX_SUCCESS:
       return Object.assign({}, state, action.fax)
     case FaxActions.SEND_FAX_FAILURE:
