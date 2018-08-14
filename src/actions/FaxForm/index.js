@@ -63,7 +63,7 @@ export const webSocketCreatedSuccess = () => {
 
 export const syncFax = () => {
   return dispatch => {
-    fetch('https://finicky-lettuce-4404.twil.io/sync-token')
+    fetch(config.syncTokenUrl)
       .then((response) => {
         return response.text()
       }).then((data) => {
